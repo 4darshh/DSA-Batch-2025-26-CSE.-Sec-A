@@ -2,6 +2,7 @@ name: Verify Student Folder Access
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     branches: [ main ]
 
 jobs:
@@ -10,8 +11,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Validate Author Folder
         run: |
@@ -90,28 +89,34 @@ jobs:
             exit 1
           fi
 
-          # Strip leading zeros for matching (e.g., '05' -> '5')
-          ALT_ROLL=$((1#$ASSIGNED_ROLL))
+          # Format leading zeros (e.g., '03' and '3')
+          PADDED_ROLL=$(printf "%02d" "$ASSIGNED_ROLL" 2>/dev/null || echo "$ASSIGNED_ROLL")
+          SINGLE_ROLL=$((10#$ASSIGNED_ROLL 2>/dev/null || echo "$ASSIGNED_ROLL"))
 
-          echo "Assigned Roll Folder: '$ASSIGNED_ROLL' (or '$ALT_ROLL')"
+          echo "Assigned Roll Folders Allowed: '$PADDED_ROLL' or '$SINGLE_ROLL'"
 
-          # Get list of changed files in this Pull Request
-          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          # Get changed files using GitHub CLI (Handles all commits, edits, uploads)
+          gh pr diff ${{ github.event.pull_request.number }} --name-only > changed_files.txt
+          
+          echo "Files modified in this PR:"
+          cat changed_files.txt
 
-          for FILE in $CHANGED_FILES; do
-            echo "Checking modified file: $FILE"
+          while IFS= read -r FILE; do
+            [ -z "$FILE" ] && continue
             
-            # Check if file is inside assigned folder (e.g., '28-07-2026/57/' or '57/')
-            if [[ "$FILE" =~ (^|/)"$ASSIGNED_ROLL"(/|$) ]] || [[ "$FILE" =~ (^|/)"$ALT_ROLL"(/|$) ]]; then
-              continue
+            # Check if file path contains /03/ or /3/ or starts with 03/ or 3/
+            if [[ "$FILE" =~ (^|/)"$PADDED_ROLL"(/|$) ]] || [[ "$FILE" =~ (^|/)"$SINGLE_ROLL"(/|$) ]]; then
+              echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "$AUTHOR is ONLY permitted to edit folders named '$ASSIGNED_ROLL'."
+              echo "$AUTHOR is ONLY permitted to edit folders named '$PADDED_ROLL' or '$SINGLE_ROLL'."
               echo "--------------------------------------------------------"
               exit 1
             fi
-          done
+          done < changed_files.txt
 
-          echo "SUCCESS: All files modified by $AUTHOR belong to folder '$ASSIGNED_ROLL'."
+          echo "SUCCESS: All files modified belong to folder '$ASSIGNED_ROLL'."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
