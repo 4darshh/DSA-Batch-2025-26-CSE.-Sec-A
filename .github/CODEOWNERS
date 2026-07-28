@@ -1,0 +1,93 @@
+# Default rule: Admin full access to root files and fallbacks
+* @AG349 @4darshh
+
+# Roll Numbers 01 to 09 (Handles both single digit '1' and padded '01')
+/* /01/ @student_username_01 @AG349 @4darshh
+/* /1/  @student_username_01 @AG349 @4darshh
+
+/* /02/ @student_username_02 @AG349 @4darshh
+/* /2/  @student_username_02 @AG349 @4darshh
+
+/* /03/ @student_username_03 @AG349 @4darshh
+/* /3/  @student_username_03 @AG349 @4darshh
+
+/* /04/ @SUDIP-MANDAL01 @AG349 @4darshh
+/* /4/  @SUDIP-MANDAL01 @AG349 @4darshh
+
+/* /05/ @student_username_05 @AG349 @4darshh
+/* /5/  @student_username_05 @AG349 @4darshh
+
+/* /06/ @student_username_06 @AG349 @4darshh
+/* /6/  @student_username_06 @AG349 @4darshh
+
+/* /07/ @student_username_07 @AG349 @4darshh
+/* /7/  @student_username_07 @AG349 @4darshh
+
+/* /08/ @student_username_08 @AG349 @4darshh
+/* /8/  @student_username_08 @AG349 @4darshh
+
+/* /09/ @student_username_09 @AG349 @4darshh
+/* /9/  @student_username_09 @AG349 @4darshh
+
+# Roll Numbers 10 to 70
+/* /10/ @student_username_10 @AG349 @4darshh
+/* /11/ @student_username_11 @AG349 @4darshh
+/* /12/ @student_username_12 @AG349 @4darshh
+/* /13/ @student_username_13 @AG349 @4darshh
+/* /14/ @student_username_14 @AG349 @4darshh
+/* /15/ @student_username_15 @AG349 @4darshh
+/* /16/ @student_username_16 @AG349 @4darshh
+/* /17/ @student_username_17 @AG349 @4darshh
+/* /18/ @student_username_18 @AG349 @4darshh
+/* /19/ @student_username_19 @AG349 @4darshh
+/* /20/ @student_username_20 @AG349 @4darshh
+/* /21/ @student_username_21 @AG349 @4darshh
+/* /22/ @student_username_22 @AG349 @4darshh
+/* /23/ @student_username_23 @AG349 @4darshh
+/* /24/ @student_username_24 @AG349 @4darshh
+/* /25/ @student_username_25 @AG349 @4darshh
+/* /26/ @student_username_26 @AG349 @4darshh
+/* /27/ @student_username_27 @AG349 @4darshh
+/* /28/ @student_username_28 @AG349 @4darshh
+/* /29/ @student_username_29 @AG349 @4darshh
+/* /30/ @student_username_30 @AG349 @4darshh
+/* /31/ @student_username_31 @AG349 @4darshh
+/* /32/ @student_username_32 @AG349 @4darshh
+/* /33/ @student_username_33 @AG349 @4darshh
+/* /34/ @student_username_34 @AG349 @4darshh
+/* /35/ @student_username_35 @AG349 @4darshh
+/* /36/ @student_username_36 @AG349 @4darshh
+/* /37/ @student_username_37 @AG349 @4darshh
+/* /38/ @student_username_38 @AG349 @4darshh
+/* /39/ @student_username_39 @AG349 @4darshh
+/* /40/ @student_username_40 @AG349 @4darshh
+/* /41/ @student_username_41 @AG349 @4darshh
+/* /42/ @student_username_42 @AG349 @4darshh
+/* /43/ @AG349 @4darshh
+/* /44/ @student_username_44 @AG349 @4darshh
+/* /45/ @student_username_45 @AG349 @4darshh
+/* /46/ @student_username_46 @AG349 @4darshh
+/* /47/ @student_username_47 @AG349 @4darshh
+/* /48/ @student_username_48 @AG349 @4darshh
+/* /49/ @student_username_49 @AG349 @4darshh
+/* /50/ @student_username_50 @AG349 @4darshh
+/* /51/ @student_username_51 @AG349 @4darshh
+/* /52/ @student_username_52 @AG349 @4darshh
+/* /53/ @student_username_53 @AG349 @4darshh
+/* /54/ @student_username_54 @AG349 @4darshh
+/* /55/ @student_username_55 @AG349 @4darshh
+/* /56/ @student_username_56 @AG349 @4darshh
+/* /57/ @student_username_57 @AG349 @4darshh
+/* /58/ @student_username_58 @AG349 @4darshh
+/* /59/ @student_username_59 @AG349 @4darshh
+/* /60/ @student_username_60 @AG349 @4darshh
+/* /61/ @student_username_61 @AG349 @4darshh
+/* /62/ @student_username_62 @AG349 @4darshh
+/* /63/ @student_username_63 @AG349 @4darshh
+/* /64/ @student_username_64 @AG349 @4darshh
+/* /65/ @student_username_65 @AG349 @4darshh
+/* /66/ @student_username_66 @AG349 @4darshh
+/* /67/ @student_username_67 @AG349 @4darshh
+/* /68/ @student_username_68 @AG349 @4darshh
+/* /69/ @student_username_69 @AG349 @4darshh
+/* /70/ @student_username_70 @AG349 @4darshh
