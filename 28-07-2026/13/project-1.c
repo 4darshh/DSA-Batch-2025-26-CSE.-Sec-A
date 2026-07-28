@@ -1,17 +1,15 @@
 #include <stdio.h>
 
-void delete_at_index(int arr[], int *size, int index) {
-    if (index < 0 || index >= *size) {
+void delete_at_index(int arr[], int size, int index) {
+    if (index < 0 || index >= size) {
         printf("Invalid position.\n");
         return;
     }
-    for (int i = index; i < *size - 1; i++) {
+    for (int i = index; i < size - 1; i++) {
         arr[i] = arr[i + 1];
     }
-    (*size)--;
-}
+    size--;
 
-void print_array(int arr[], int size) {
     for (int i = 0; i < size; i++) {
         printf("%d ", arr[i]);
     }
@@ -19,33 +17,38 @@ void print_array(int arr[], int size) {
 }
 
 int main() {
-    int arr[100], size, n;
+    int size, n;
 
     printf("Enter number of elements in array: ");
     if (scanf("%d", &size) != 1 || size <= 0) {
         return 1;
     }
 
+    int original[size], temp[size];
+
     printf("Enter %d elements:\n", size);
     for (int i = 0; i < size; i++) {
-        scanf("%d", &arr[i]);
+        scanf("%d", &original[i]);
     }
-
-    printf("\nOriginal array: ");
-    print_array(arr, size);
-
-    delete_at_index(arr, &size, 0);
-    printf("Array after deleting the first element: ");
-    print_array(arr, size);
 
     printf("\nEnter 1-based position (n) to delete: ");
     if (scanf("%d", &n) != 1) {
         return 1;
     }
 
-    delete_at_index(arr, &size, n - 1);
-    printf("Array after deleting position %d: ", n);
-    print_array(arr, size);
+    printf("\nOriginal array: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", original[i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < size; i++) temp[i] = original[i];
+    printf("Original array after deleting 1st element: ");
+    delete_at_index(temp, size, 0);
+
+    for (int i = 0; i < size; i++) temp[i] = original[i];
+    printf("Original array after deleting position %d: ", n);
+    delete_at_index(temp, size, n - 1);
 
     return 0;
 }
