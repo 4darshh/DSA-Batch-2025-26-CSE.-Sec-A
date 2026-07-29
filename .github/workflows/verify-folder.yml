@@ -109,14 +109,14 @@ jobs:
           for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
             
-            # Check if file path matches '04/...' OR 'DATE_FOLDER/04/...'
+            # Allow strictly if path contains their roll number as folder segment
             if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]] || [[ "$FILE" =~ /"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ /"$SINGLE_ROLL"/ ]]; then
               echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "Allowed folder name in path: '$PADDED_ROLL' or '$SINGLE_ROLL'"
+              echo "Allowed folder: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
               echo "--------------------------------------------------------"
               exit 1
             fi
