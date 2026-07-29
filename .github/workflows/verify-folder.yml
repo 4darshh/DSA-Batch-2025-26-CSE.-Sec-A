@@ -31,7 +31,6 @@ jobs:
 
           # 2. Map GitHub Usernames to assigned Roll Numbers
           declare -A ROLL_MAP
-          ROLL_MAP["smsayanmondal06-svg"]="57"
           ROLL_MAP["Disha0007-dev"]="01"
           ROLL_MAP["KomalChoudhury"]="02"
           ROLL_MAP["najib-aftab"]="03"
@@ -77,6 +76,7 @@ jobs:
           ROLL_MAP["arijitdutta1608"]="53"
           ROLL_MAP["bedantachakraborty2000555-cmyk"]="54"
           ROLL_MAP["Ahitagni-lan"]="55"
+          ROLL_MAP["smsayanmondal06-svg"]="57"
           ROLL_MAP["mohanmaji2004-a11y"]="58"
           ROLL_MAP["simranmandalwork"]="59"
           ROLL_MAP["dasarpan1596-cmd"]="60"
