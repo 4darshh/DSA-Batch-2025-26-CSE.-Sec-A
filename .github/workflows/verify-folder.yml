@@ -6,11 +6,17 @@ on:
     branches: [ main ]
 
 jobs:
-  check-folder-permission:
+  check-and-automerge:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Validate Author Folder
         run: |
@@ -85,38 +91,42 @@ jobs:
           ASSIGNED_ROLL="${ROLL_MAP[$AUTHOR]}"
 
           if [ -z "$ASSIGNED_ROLL" ]; then
-            echo "ERROR: Username '$AUTHOR' is not assigned to any roll number folder."
+            echo "ERROR: Username '$AUTHOR' is not mapped to any roll number folder."
             exit 1
           fi
 
-          # Format leading zeros (e.g., '03' and '3')
           PADDED_ROLL=$(printf "%02d" "$ASSIGNED_ROLL" 2>/dev/null || echo "$ASSIGNED_ROLL")
           SINGLE_ROLL=$((10#$ASSIGNED_ROLL 2>/dev/null || echo "$ASSIGNED_ROLL"))
 
-          echo "Assigned Roll Folders Allowed: '$PADDED_ROLL' or '$SINGLE_ROLL'"
+          echo "Assigned Roll Folder Must Be INSIDE: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
 
-          # Get changed files using GitHub CLI (Handles all commits, edits, uploads)
-          gh pr diff ${{ github.event.pull_request.number }} --name-only > changed_files.txt
-          
+          git fetch origin main:refs/remotes/origin/main
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+
           echo "Files modified in this PR:"
-          cat changed_files.txt
+          echo "$CHANGED_FILES"
 
-          while IFS= read -r FILE; do
+          for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
             
-            # Check if file path contains /03/ or /3/ or starts with 03/ or 3/
+            # Check if file/folder path starts with or contains the roll folder segment
             if [[ "$FILE" =~ (^|/)"$PADDED_ROLL"(/|$) ]] || [[ "$FILE" =~ (^|/)"$SINGLE_ROLL"(/|$) ]]; then
               echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "$AUTHOR is ONLY permitted to edit folders named '$PADDED_ROLL' or '$SINGLE_ROLL'."
+              echo "$AUTHOR must put all files INSIDE their folder: '$PADDED_ROLL/' or '$SINGLE_ROLL/'."
               echo "--------------------------------------------------------"
               exit 1
             fi
-          done < changed_files.txt
+          done
 
           echo "SUCCESS: All files modified belong to folder '$ASSIGNED_ROLL'."
+
+      - name: Force Auto-Merge Pull Request
+        if: success()
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --squash --admin || gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
