@@ -109,7 +109,7 @@ jobs:
           for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
             
-            # Allow strictly if path contains their roll number as folder segment
+            # Allow strictly if path contains their roll number folder
             if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]] || [[ "$FILE" =~ /"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ /"$SINGLE_ROLL"/ ]]; then
               echo "ALLOWED: $FILE"
             else
@@ -127,6 +127,6 @@ jobs:
       - name: Auto-Merge Authorized Pull Request
         if: success()
         run: |
-          gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch || gh pr merge ${{ github.event.pull_request.number }} --squash --admin
+          gh pr merge ${{ github.event.pull_request.number }} --squash --auto --delete-branch || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
