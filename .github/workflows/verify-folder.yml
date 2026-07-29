@@ -100,8 +100,6 @@ jobs:
           PADDED_ROLL=$(printf "%02d" "$ASSIGNED_ROLL" 2>/dev/null || echo "$ASSIGNED_ROLL")
           SINGLE_ROLL=$((10#$ASSIGNED_ROLL 2>/dev/null || echo "$ASSIGNED_ROLL"))
 
-          echo "Assigned Roll Folder Must Be INSIDE: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
-
           git fetch origin main:refs/remotes/origin/main
           CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
 
@@ -111,24 +109,24 @@ jobs:
           for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
             
-            # Check if file/folder path starts with or contains the roll folder segment
-            if [[ "$FILE" =~ (^|/)"$PADDED_ROLL"(/|$) ]] || [[ "$FILE" =~ (^|/)"$SINGLE_ROLL"(/|$) ]]; then
+            # STRICT CHECK: File MUST start with designated roll folder (e.g., 57/ or 01/)
+            if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]]; then
               echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "$AUTHOR must put all files INSIDE their folder: '$PADDED_ROLL/' or '$SINGLE_ROLL/'."
+              echo "Allowed directory: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
               echo "--------------------------------------------------------"
               exit 1
             fi
           done
 
-          echo "SUCCESS: All files modified belong to folder '$ASSIGNED_ROLL'."
+          echo "SUCCESS: All modified files belong strictly to folder '$ASSIGNED_ROLL'."
 
-      - name: Force Auto-Merge Pull Request
+      - name: Auto-Merge Authorized Pull Request
         if: success()
         run: |
-          gh pr merge ${{ github.event.pull_request.number }} --squash --admin || gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
+          gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
