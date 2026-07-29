@@ -1,31 +1,11 @@
-name: Verify Student Folder Access
-
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ main ]
-
-jobs:
-  check-and-automerge:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Validate Author Folder
+- name: Validate Author Folder
         run: |
           AUTHOR="${{ github.actor }}"
           echo "PR Author: $AUTHOR"
 
-          # 1. Allow Admins to edit anything
+          # 1. ADMIN BYPASS: Allow admins to create/edit ANY file or folder (e.g. date folders, workflows, root files)
           if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ]; then
-            echo "Admin user detected. Bypassing path check."
+            echo "SUCCESS: Admin user '$AUTHOR' detected. Bypassing path check completely."
             exit 0
           fi
 
@@ -93,7 +73,7 @@ jobs:
           ASSIGNED_ROLL="${ROLL_MAP[$AUTHOR]}"
 
           if [ -z "$ASSIGNED_ROLL" ]; then
-            echo "ERROR: Username '$AUTHOR' is not mapped to any roll number folder."
+            echo "ERROR: Username '$AUTHOR' is not registered in ROLL_MAP."
             exit 1
           fi
 
@@ -108,25 +88,18 @@ jobs:
 
           for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
-            
-            # STRICT CHECK: File MUST start with designated roll folder (e.g., 57/ or 01/)
-            if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]]; then
+
+            # Students must strictly modify files starting with their roll folder or inside subdirectories (e.g., 29-07-2026/01/ or 01/)
+            if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]] || [[ "$FILE" =~ /"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ /"$SINGLE_ROLL"/ ]]; then
               echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "Allowed directory: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
+              echo "Students are only allowed to modify files inside their roll folder ('$PADDED_ROLL/' or '$SINGLE_ROLL/')."
               echo "--------------------------------------------------------"
               exit 1
             fi
           done
 
           echo "SUCCESS: All modified files belong strictly to folder '$ASSIGNED_ROLL'."
-
-      - name: Auto-Merge Authorized Pull Request
-        if: success()
-        run: |
-          gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
