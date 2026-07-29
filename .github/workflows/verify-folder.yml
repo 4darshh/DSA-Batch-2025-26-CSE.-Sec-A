@@ -1,9 +1,29 @@
-- name: Validate Author Folder
+name: Verify Student Folder Access
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ main ]
+
+jobs:
+  check-and-automerge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Author Folder
         run: |
           AUTHOR="${{ github.actor }}"
           echo "PR Author: $AUTHOR"
 
-          # 1. ADMIN BYPASS: Allow admins to create/edit ANY file or folder (e.g. date folders, workflows, root files)
+          # 1. ADMIN BYPASS: Allow admins to edit/create anything
           if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ]; then
             echo "SUCCESS: Admin user '$AUTHOR' detected. Bypassing path check completely."
             exit 0
@@ -88,18 +108,25 @@
 
           for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
-
-            # Students must strictly modify files starting with their roll folder or inside subdirectories (e.g., 29-07-2026/01/ or 01/)
+            
+            # Check if file path matches '04/...' OR 'DATE_FOLDER/04/...'
             if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]] || [[ "$FILE" =~ /"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ /"$SINGLE_ROLL"/ ]]; then
               echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "Students are only allowed to modify files inside their roll folder ('$PADDED_ROLL/' or '$SINGLE_ROLL/')."
+              echo "Allowed folder name in path: '$PADDED_ROLL' or '$SINGLE_ROLL'"
               echo "--------------------------------------------------------"
               exit 1
             fi
           done
 
           echo "SUCCESS: All modified files belong strictly to folder '$ASSIGNED_ROLL'."
+
+      - name: Auto-Merge Authorized Pull Request
+        if: success()
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch || gh pr merge ${{ github.event.pull_request.number }} --squash --admin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
