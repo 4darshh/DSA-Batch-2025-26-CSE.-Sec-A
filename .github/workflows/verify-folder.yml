@@ -24,7 +24,7 @@ jobs:
           echo "PR Author: $AUTHOR"
 
           # 1. ADMIN BYPASS: Allow admins to edit/create anything
-          if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ]; then
+          if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ] || [ "$AUTHOR" = "BodhiCSE2025" ]; then
             echo "SUCCESS: Admin user '$AUTHOR' detected. Bypassing path check completely."
             exit 0
           fi
