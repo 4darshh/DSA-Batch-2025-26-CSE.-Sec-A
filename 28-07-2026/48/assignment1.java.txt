@@ -1,0 +1,36 @@
+import java.util.Scanner;
+class DFE 
+{
+    public static void main() 
+{
+Scanner sc = newScanner(System.in);
+
+System.out.print("Enter the size of the array: ");
+ int n = sc.nextInt();
+ int[] arr = new int[n];
+System.out.println("Enter the array elements:");
+        for (int i = 0; i < n; i++) 
+{
+            arr[i] = sc.nextInt();
+        }
+
+        if (n <= 1) 
+{
+            System.out.println("Array becomes empty after deletion.");
+            return;
+        }
+
+        int[] newArr = new int[n - 1];
+
+        for (int i = 1; i < n; i++) 
+{
+            newArr[i - 1] = arr[i];
+        }
+
+        System.out.println("Array after deleting the first element:");
+        for (int i = 0; i < newArr.length; i++) 
+{
+            System.out.print(newArr[i] + " ");
+        }
+    }
+}

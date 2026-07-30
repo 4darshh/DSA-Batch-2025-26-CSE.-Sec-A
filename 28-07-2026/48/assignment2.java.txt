@@ -1,0 +1,41 @@
+import java.util.Scanner;
+class DNE
+{
+    public static void main() 
+{
+ Scanner sc = new Scanner(System.in);
+ System.out.print("Enter the size of the array: ");
+  int size = sc.nextInt();  
+int[] arr = new int[size];
+System.out.println("Enter the array elements:");
+        for (int i = 0; i < size; i++) 
+{
+            arr[i] = sc.nextInt();
+        }
+
+System.out.print("Enter the position (1 to " + size + ") to delete: ");
+        int pos = sc.nextInt();
+
+        if (pos < 1 || pos > size) {
+            System.out.println("Invalid position.");
+            return;
+        }
+
+        int[] newArr = new int[size - 1];
+        int j = 0;
+
+        for (int i = 0; i < size; i++) 
+{
+            if (i != pos - 1) 
+{
+                newArr[j] = arr[i];
+                j++;
+            }
+        }
+System.out.println("Array after deleting the " + pos + "th element:");
+        for (int i = 0; i < newArr.length; i++) 
+{
+            System.out.print(newArr[i] + " ");
+        }
+    }
+}
