@@ -1,33 +1,82 @@
-#include<stdio.h>
-int main(){
-    int n;
-    printf(" Enter The Array Size : ");
+#include <stdio.h>
+
+void merge(int a[], int l, int m, int r)
+{
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    int L[50], R[50];
+
+    for (i = 0; i < n1; i++)
+        L[i] = a[l + i];
+
+    for (j = 0; j < n2; j++)
+        R[j] = a[m + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = l;
+
+    while (i < n1 && j < n2)
+    {
+        if (L[i] < R[j])
+        {
+            a[k] = L[i];
+            i++;
+        }
+        else
+        {
+            a[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1)
+    {
+        a[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        a[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergesort(int a[], int l, int r)
+{
+    if (l < r)
+    {
+        int m = (l + r) / 2;
+
+        mergesort(a, l, m);
+        mergesort(a, m + 1, r);
+
+        merge(a, l, m, r);
+    }
+}
+
+int main()
+{
+    int a[50], n, i;
+
+    printf("Enter number of elements: ");
     scanf("%d", &n);
-    int arr[n];
-    printf(" Enter The Array : ");
-    for(int i=0;i<n;i++){
-        scanf("%d", &arr[i]);
-    }
-    for(int j=0;j<n/2;j++){
-        for(int k=j+1;k<n;k++){
-            if(arr[j]>arr[k]){
-                int sum = arr[k];
-                arr[k]  = arr[j];
-                arr[j] = sum;
-            }
-        }
-    }
-       for(int j=n/2;j<n;j++){
-        for(int k=j+1;k<n;k++){
-            if(arr[j]>arr[k]){
-                int sum = arr[k];
-                arr[k]  = arr[j];
-                arr[j] = sum;
-            }
-        }
-    }
-    printf(" Enter The Sorted Array  : ");
-    for(int i=0;i<n;i++){
-        printf("%d ",arr[i]);
-    }
+
+    printf("Enter elements:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &a[i]);
+
+    mergesort(a, 0, n - 1);
+
+    printf("Sorted array:\n");
+    for (i = 0; i < n; i++)
+        printf("%d ", a[i]);
+
+    return 0;
 }
