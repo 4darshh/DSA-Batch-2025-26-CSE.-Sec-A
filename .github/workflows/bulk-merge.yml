@@ -1,0 +1,16 @@
+name: Bulk Merge Student PRs
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-Merge PR
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --squash --admin --delete-branch || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
