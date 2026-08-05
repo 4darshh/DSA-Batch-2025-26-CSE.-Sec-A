@@ -1,24 +1,4 @@
-name: Verify Student Folder Access
-
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ main ]
-
-jobs:
-  check-and-automerge:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Validate Author Folder
+- name: Validate Author Folder
         run: |
           AUTHOR="${{ github.actor }}"
           echo "PR Author: $AUTHOR"
@@ -98,8 +78,9 @@ jobs:
             exit 1
           fi
 
-          PADDED_ROLL=$(printf "%02d" "$ASSIGNED_ROLL" 2>/dev/null || echo "$ASSIGNED_ROLL")
-          SINGLE_ROLL=$((10#$ASSIGNED_ROLL 2>/dev/null || echo "$ASSIGNED_ROLL"))
+          # Safe evaluation of single and padded roll formats
+          SINGLE_ROLL=$((10#$ASSIGNED_ROLL))
+          PADDED_ROLL=$(printf "%02d" "$SINGLE_ROLL")
 
           git fetch origin main:refs/remotes/origin/main
           CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
@@ -124,10 +105,3 @@ jobs:
           done
 
           echo "SUCCESS: All modified files belong strictly to folder '$ASSIGNED_ROLL'."
-
-      - name: Auto-Merge Authorized Pull Request
-        if: success()
-        run: |
-          gh pr merge ${{ github.event.pull_request.number }} --squash --auto --delete-branch || true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
